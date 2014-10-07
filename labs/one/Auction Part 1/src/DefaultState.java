@@ -18,7 +18,7 @@ public class DefaultState implements Event
 		String username = scanner.nextLine();
 		if (username.equals(""))
 		{
-			return new DefaultState(service);
+			return null;
 		}
 		return new UserHomeState(username, service);
 	}

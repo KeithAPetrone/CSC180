@@ -20,7 +20,7 @@ public class UserHomeState implements Event
 		String criteria = scanner.nextLine();
 		if (criteria.equals(""))
 		{
-			return new DefaultState(service);
+			return null;
 		}
 		return new SearchResultsState(username, criteria, service);
 	}

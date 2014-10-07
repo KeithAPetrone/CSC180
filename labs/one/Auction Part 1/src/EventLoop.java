@@ -11,23 +11,27 @@ public class EventLoop
 	{
 		InMemoryAuctionService service = new InMemoryAuctionService();
 		DefaultState defaultState = new DefaultState(service);
-		defaultState.show();
-		toDo.add(defaultState);
-		toDo.add(defaultState.next());
+		//defaultState.show();
+		toDo.offer(defaultState);
+		toDo.offer(defaultState);
+		//toDo.offer(defaultState.next());
 		while(true)
 		{
-			if (!toDo.isEmpty())
-			{
-				toDo.element().show();
-				toDo.add(toDo.element().next());
-				done.add(toDo.element().next());
-				done.add(toDo.element());
-				toDo.poll();
-			}			
-			else
+			if (toDo.isEmpty() == true)
 			{
 				toDo.addAll(done);
+				toDo.offer(defaultState);
 				done.clear();
+			}
+			
+			if(toDo.peek() == null)
+			{
+				toDo.remove();
+			}
+			else
+			{
+				toDo.element().show();
+				done.offer(toDo.poll().next());
 			}
 		}
 	}
