@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 
 
 
@@ -14,7 +12,7 @@ public class ContainsPredicate implements Predicate<Auction>
 	
 	public boolean evaluate(Auction t)
 	{	
-		if (criteria.contains("OR") || criteria.contains("AND"))
+		/*if (criteria.contains("OR") || criteria.contains("AND"))
 		{
 			boolean andCheck = false;
 			boolean orCheck = false;
@@ -109,7 +107,7 @@ public class ContainsPredicate implements Predicate<Auction>
 				return true;
 			}
 		}
-		
+		*/
 		return (t.getName().toLowerCase().contains(criteria.toLowerCase()) || t.getDescription().toLowerCase().contains(criteria.toLowerCase()));
 	}
 }

@@ -34,7 +34,7 @@ public class AuctionCreateState implements Event
 		{
 			startingPrice = "1";
 		}
-		service.create(new Auction(service.hashCode(), name, Integer.valueOf(startingPrice), description));
+		service.create(new Auction(service.map.size(), name, Integer.valueOf(startingPrice), description));
 		return new UserHomeState(username, service);
 	}
 	

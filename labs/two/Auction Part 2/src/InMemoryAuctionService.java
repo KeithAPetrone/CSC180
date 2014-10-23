@@ -1,15 +1,64 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 
 public class InMemoryAuctionService implements AuctionService
 {
 	CollectionUtils collectionUtils = new CollectionUtils();
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Auction[] search(java.lang.String criteria)
 	{
 		List<Auction> temp = new ArrayList<Auction>(map.values());
-		return (collectionUtils.filter(temp, new ContainsPredicate(criteria))).toArray(new Auction[temp.size()]);
+		String[] criteriaArray = criteria.split(" ");
+		@SuppressWarnings("rawtypes")
+		Stack<Predicate> predicateStack = new Stack<Predicate>();
+		Stack<String> operatorStack = new Stack<String>();
+		for (int i = 0; i < criteriaArray.length; i++)
+		{
+			if (criteriaArray[i].contains("OR"))
+			{
+				if (!predicateStack.peek().getClass().equals(new AndPredicate(new ContainsPredicate(criteria), new ContainsPredicate(criteria)).getClass()))
+				{
+					operatorStack.add("OR");
+				}
+				else
+				{
+					predicateStack.add(new AndPredicate(predicateStack.pop(), predicateStack.pop()));
+					operatorStack.pop();
+				}
+			}
+			else if (criteriaArray[i].contains("AND"))
+			{
+				operatorStack.add("AND");
+			}
+			else
+			{
+				predicateStack.add(new ContainsPredicate(criteriaArray[i]));
+			}
+		}
+		while (!operatorStack.isEmpty())
+		{
+			if (operatorStack.pop().equals("AND"))
+			{
+				predicateStack.add(new AndPredicate(predicateStack.pop(), predicateStack.pop()));
+			}
+			if (!operatorStack.isEmpty())
+			{
+				if (operatorStack.pop().equals("OR"))
+				{
+					predicateStack.add(new OrPredicate(predicateStack.pop(), predicateStack.pop()));
+				}
+			}
+		}
+		Object[] tempArray = (collectionUtils.filter(temp, predicateStack.pop())).toArray();
+		Auction[] auctionArray = new Auction[tempArray.length];
+		for (int i = 0; i < tempArray.length; i++)
+		{
+			auctionArray[i] = (Auction) tempArray[i];
+		}
+		return auctionArray;
 	}
 
 	public Auction bid(java.lang.String username, java.lang.Integer id)

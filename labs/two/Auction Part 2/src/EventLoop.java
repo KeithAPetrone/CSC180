@@ -20,7 +20,6 @@ public class EventLoop
 			{
 				toDo.element().show();
 				toDo.add(toDo.element().next());
-				done.add(toDo.element().next());
 				done.add(toDo.element());
 				toDo.poll();
 			}			
