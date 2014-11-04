@@ -12,7 +12,7 @@ public class Padder
 		{
 			while (s.length() < len)
 			{
-				s = s + "~";
+				s = s + "\b";
 			}
 		}
 		else if (s.length() > len)
@@ -29,9 +29,9 @@ public class Padder
 	{
 		String s = str;
 		Object obj = null;
-		if (str.contains("~"))
+		if (str.contains("\b"))
 		{
-			s = s.replace("~", "");
+			s = s.replace("\b", "");
 			try
 			{
 				if (Integer.parseInt(s) < Long.MIN_VALUE)
@@ -68,9 +68,9 @@ public class Padder
 	{
 		String s = str;
 		Object obj = null;
-		if (str.contains("~"))
+		if (str.contains("\b"))
 		{
-			s = s.replace("~", "");
+			s = s.replace("\b", "");
 		}
 		if (clazz.equals(Long.class))
 		{

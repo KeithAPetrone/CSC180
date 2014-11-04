@@ -19,16 +19,16 @@ public class PadderTest {
 		System.out.println(padder.pad(null, 0));
 		System.out.println(padder.pad(1234, 0));
 		
-		System.out.println(padder.unpad("1234~~~~~~~~~"));
-		System.out.println(padder.unpad("34.45~~~~"));
-		System.out.println(padder.unpad("Howdy, Stranger!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"));
-		System.out.println(padder.unpad("1234123412341234~~~~"));
+		System.out.println(padder.unpad("1234\b\b\b\b"));
+		System.out.println(padder.unpad("34.45\b\b\b"));
+		System.out.println(padder.unpad("Howdy, Stranger!\b\b\b\b\b\b\b\b\b\b"));
+		System.out.println(padder.unpad("1234123412341234\b\b\b\b\b"));
 		System.out.println(padder.unpad(""));
 
 		thrown.expect(NumberFormatException.class);
-		System.out.println(padder.unpad("1234~~~~~~~~~", Double.class));
-		System.out.println(padder.unpad("34.45~~~~", Integer.class));
-		System.out.println(padder.unpad("Ora Viva!~~~~~", Long.class));
+		System.out.println(padder.unpad("1234\b\b\b\b", Double.class));
+		System.out.println(padder.unpad("34.45\b\b\b\b", Integer.class));
+		System.out.println(padder.unpad("Ora Viva!\b\b\b\b\b", Long.class));
 		System.out.println(padder.unpad("", Integer.class));
 	}
 
