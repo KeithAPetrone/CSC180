@@ -29,17 +29,18 @@ public class RemoteClientAuctionService implements AuctionService
 	{
 		this.load();
 		ServerSocket ss = new ServerSocket(30000);
-		Socket socket = ss.accept();
-		PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-		ObjectInputStream ois;
-		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		String username = br.readLine();
-		pw.println("Welcome to Ebay...");
-		
+		int userNumber = 1;
 		while (true)
 		{
-			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			userNumber = userNumber + 1;
+			String username = "User: " + userNumber;
+			Socket socket = ss.accept();
+			PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+			ObjectInputStream ois;
+			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			String input = br.readLine();
+			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			
 			if (input.contains("d(") && input.contains(")"))
 			{
 				input = input.replace("(", "");
@@ -47,6 +48,7 @@ public class RemoteClientAuctionService implements AuctionService
 				input = input.replace("d", "");
 				this.delete(Integer.parseInt(input));
 				pw.println("Auction deleted...");
+				pw.flush();
 			}
 			else if (input.contains("r(") && input.contains(")"))
 			{
@@ -56,10 +58,12 @@ public class RemoteClientAuctionService implements AuctionService
 				try
 				{
 					pw.println(this.retreive(Integer.parseInt(input)).toString());
+					pw.flush();
 				}
 				catch(ObjectNotFoundException e)
 				{
 					pw.println("No auction found");
+					pw.flush();
 				}
 			}
 			else if (input.contains("b(") && input.contains(")"))
@@ -68,13 +72,17 @@ public class RemoteClientAuctionService implements AuctionService
 				input = input.replace(")", "");
 				input = input.replace("b", "");
 				pw.println(this.bid(username, Integer.parseInt(input)).toString());
+				pw.flush();
 			}
 			else if (input.contains("c"))
 			{
+				
 				ois = new ObjectInputStream(socket.getInputStream());
 				Auction auction = (Auction) ois.readObject();
 				this.create(auction);
+				this.save();                                                            
 				pw.println(auction.toString());
+				pw.flush();
 			}
 			else if (input.contains("u(") && input.contains(")"))
 			{
@@ -93,6 +101,7 @@ public class RemoteClientAuctionService implements AuctionService
 				}
 				this.create(auction);
 				pw.println(auction.toString());
+				pw.flush();
 			}
 			else
 			{
@@ -115,21 +124,22 @@ public class RemoteClientAuctionService implements AuctionService
 		Auction a = null;
 		try {
 			socket = new Socket("localhost", 30000);
-			PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-			ObjectOutputStream oos;
-			ObjectInputStream ois;
-			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			pw.println(username);
-			System.out.println(br.readLine());
 			while (true)
 			{
 				System.out.println("\nDelete - d(id)\nRetrieve r(id)\nBid - b(id)\nCreate - c\nUpdate - u(id)\nPerform Search - s");
 				String input = scanner.nextLine();
+				
 				if (input.contains("s"))
 				{
 					System.out.println("What do you want to search for?\n");
 					input = scanner.nextLine();
+
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+					ObjectOutputStream oos;
+					ObjectInputStream ois;
+					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					pw.println(input);
+					pw.flush();
 					ois = new ObjectInputStream(socket.getInputStream());
 					Auction[] auctions = (Auction[]) ois.readObject();
 					
@@ -154,8 +164,23 @@ public class RemoteClientAuctionService implements AuctionService
 						}
 					}
 				}
+				else if (input.contains("b"))
+				{
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+					ObjectOutputStream oos;
+					ObjectInputStream ois;
+					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					pw.println(input);
+					pw.flush();
+				}
 				else if (input.contains("r"))
 				{
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+					ObjectOutputStream oos;
+					ObjectInputStream ois;
+					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					pw.println(input);
+					pw.flush();
 					System.out.println(username + ", here are your search results:\n");
 					System.out.println("====================================================\n");
 					System.out.println("=========          Search Results          =========\n");
@@ -166,7 +191,13 @@ public class RemoteClientAuctionService implements AuctionService
 				}
 				else if (input.contains("c"))
 				{
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
 					pw.println(input);
+					pw.flush();
+					pw = new PrintWriter(socket.getOutputStream(), true);
+					ObjectOutputStream oos;
+					ObjectInputStream ois;
+					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					System.out.println("\nEnter auction name:");
 					String name = scanner.nextLine();
 					System.out.println("Enter auction description:");
@@ -216,7 +247,14 @@ public class RemoteClientAuctionService implements AuctionService
 				}
 				else if (input.contains("u"))
 				{
+					socket = new Socket("localhost", 30000);
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+					ObjectOutputStream oos;
+					ObjectInputStream ois;
+					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					System.out.println(br.readLine());
 					pw.println(input);
+					pw.flush();
 					System.out.println("\nEnter replacement auction name:");
 					String name = scanner.nextLine();
 					System.out.println("Enter replacement auction description:");
@@ -266,10 +304,17 @@ public class RemoteClientAuctionService implements AuctionService
 				}
 				else
 				{
+					socket = new Socket("localhost", 30000);
+					PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
+					ObjectOutputStream oos;
+					ObjectInputStream ois;
+					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+					pw.flush();
+					System.out.println(br.readLine());
 					pw.println(input);
+					pw.flush();
 				}
-				br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				System.out.println(br.readLine());
 			}
 			
 		} catch (IOException | ClassNotFoundException e) {
