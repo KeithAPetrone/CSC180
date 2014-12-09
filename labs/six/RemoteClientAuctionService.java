@@ -361,6 +361,7 @@ public class RemoteClientAuctionService implements AuctionService
 			map.get(id).setCurrentBid(map.get(id).getCurrentBid() + 1);
 			map.get(id).setNumberOfBidsRemaining((map.get(id).getNumberOfBidsRemaining() + 1));
 			map.get(id).setOwner(username);
+			map.get(id).setLastModifiedDate(new Date());
 			item = map.get(id);
 		}
 		else
@@ -406,6 +407,7 @@ public class RemoteClientAuctionService implements AuctionService
 	@Override
 	public Auction update(Auction item, Integer id) {
 		// TODO Auto-generated method stub
+		map.get(id).setLastModifiedDate(new Date());
 		return null;
 	}
 

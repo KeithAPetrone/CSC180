@@ -7,6 +7,7 @@ public class Auction implements Serializable
 	 * 
 	 */
 	//private static final long serialVersionUID = 1L;
+	private Date lastModifiedDate;
 	private int id;
 	private int externalID;
 	private int currentBid;
@@ -28,6 +29,7 @@ public class Auction implements Serializable
 		this.currentBid = currentBid;
 		this.description = description;
 		this.creator = creator;
+		this.lastModifiedDate = new Date();
 	}
 	
 	public Auction(java.lang.Integer id, java.lang.String name, java.lang.Integer currentBid, String description, Date endDate, String creator)
@@ -39,6 +41,7 @@ public class Auction implements Serializable
 		this.endsBy = endDate;
 		this.numberOfBidsRemaining = 0;
 		this.creator = creator;
+		this.lastModifiedDate = new Date();
 	}
 	
 	public Auction(java.lang.Integer id, java.lang.String name, java.lang.Integer currentBid, String description, Date endDate, int numberOfBidsRemaining)
@@ -54,6 +57,7 @@ public class Auction implements Serializable
 		this.timeLeftInMillis = currentDate.getTime();
 		this.endsBy = new Date(this.timeLeftInMillis);
 		this.creator = "system";
+		this.lastModifiedDate = new Date();
 	}
 	
 	public Auction(java.lang.Integer id, java.lang.String name, java.lang.Integer currentBid, String description, Date endDate, int numberOfBidsRemaining, String owner)
@@ -70,6 +74,7 @@ public class Auction implements Serializable
 		this.endsBy = new Date(this.timeLeftInMillis);
 		this.creator = "system";
 		this.owner = owner;
+		this.lastModifiedDate = new Date();
 	}
 	
 	public String getDescription() {
@@ -83,8 +88,17 @@ public class Auction implements Serializable
 		this.currentBid = currentBid;
 		this.description = description;
 		this.properties = properties;
+		this.lastModifiedDate = new Date();
 	}
 	
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
