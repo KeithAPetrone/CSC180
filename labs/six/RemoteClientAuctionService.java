@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,18 +37,19 @@ public class RemoteClientAuctionService implements AuctionService
 		ServerThread t = new ServerThread(this, userNumber);
 		t.run();
 	}
+	
+	private JTextField nameField = new JTextField("Name");
+	private JTextField descriptionField = new JTextField("Description");
+	private JTextField valueField = new JTextField("Value");
+	private JTextField dateField = new JTextField("mm/dd/yyyy");
 	private int id = 0;
 	private Auction a = null;
 	public void connectToServer()
 	{
-		JPanel clientMenu = new JPanel();
-		JPanel auctionForm = new JPanel();
-		JTextField nameField = new JTextField("Name");
-		JTextField descriptionField = new JTextField("Description");
-		JTextField valueField = new JTextField("Value");
-		JTextField dateField = new JTextField("mm/dd/yyyy");
 		JButton createAuction = new JButton("Create Auction");
 		JButton confirm = new JButton("Create Auction");
+		final JPanel clientMenu = new JPanel();
+		final JPanel auctionForm = new JPanel();
 		auctionForm.add(nameField);
 		auctionForm.add(descriptionField);
 		auctionForm.add(valueField);
