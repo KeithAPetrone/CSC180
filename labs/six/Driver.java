@@ -16,10 +16,10 @@ public class Driver
 	
 	public static void main(String[] args) throws ParseException, ClassNotFoundException
 	{
-		RemoteClientAuctionService service = new RemoteClientAuctionService();
+		final RemoteClientAuctionService service = new RemoteClientAuctionService();
 		System.out.println("Pick one of the following\n\n1 - Server\n2 - Client\n\n\n");
 		frame = new JFrame("Auction Part 6");
-		JPanel mainMenu = new JPanel();
+		final JPanel mainMenu = new JPanel();
 		JButton serverButton = new JButton("Start a Server");
 		ActionListener startServer = new ActionListener()
 		{	
@@ -52,6 +52,7 @@ public class Driver
 		mainMenu.add(clientButton);
 		frame.add(mainMenu);
 		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
 }

@@ -34,91 +34,9 @@ public class RemoteClientAuctionService implements AuctionService
 	public void startServer() throws IOException, ParseException, ClassNotFoundException
 	{
 		this.load();
-		ServerSocket ss = new ServerSocket(30000);
 		int userNumber = 1;
-		while (true)
-		{
-			userNumber = userNumber + 1;
-			String username = "User: " + userNumber;
-			Socket socket = ss.accept();
-			PrintWriter pw = new PrintWriter(socket.getOutputStream(), true);
-			ObjectInputStream ois;
-			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			String input = br.readLine();
-			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
-			if (input.contains("d(") && input.contains(")"))
-			{
-				input = input.replace("(", "");
-				input = input.replace(")", "");
-				input = input.replace("d", "");
-				this.delete(Integer.parseInt(input));
-				pw.println("Auction deleted...");
-				pw.flush();
-			}
-			else if (input.contains("r(") && input.contains(")"))
-			{
-				input = input.replace("(", "");
-				input = input.replace(")", "");
-				input = input.replace("r", "");
-				try
-				{
-					pw.println(this.retreive(Integer.parseInt(input)).toString());
-					pw.flush();
-				}
-				catch(ObjectNotFoundException e)
-				{
-					pw.println("No auction found");
-					pw.flush();
-				}
-			}
-			else if (input.contains("b(") && input.contains(")"))
-			{
-				input = input.replace("(", "");
-				input = input.replace(")", "");
-				input = input.replace("b", "");
-				pw.println(this.bid(username, Integer.parseInt(input)).toString());
-				pw.flush();
-			}
-			else if (input.contains("c"))
-			{
-				
-				ois = new ObjectInputStream(socket.getInputStream());
-				Auction auction = (Auction) ois.readObject();
-				this.create(auction);
-				this.save();                                                            
-				pw.println(auction.toString());
-				pw.flush();
-			}
-			else if (input.contains("u(") && input.contains(")"))
-			{
-				input = input.replace("(", "");
-				input = input.replace(")", "");
-				input = input.replace("u", "");
-				int id = Integer.parseInt(input);
-				Auction old = this.retreive(id);
-				this.delete(id);
-				ois = new ObjectInputStream(socket.getInputStream());
-				Auction auction = (Auction) ois.readObject();
-				if (old.getCurrentBid() != 0)
-				{
-					old.setDescription(auction.getDescription());
-					auction = old;
-				}
-				this.create(auction);
-				pw.println(auction.toString());
-				pw.flush();
-			}
-			else
-			{
-				Auction[] results = this.search(input);
-				Object o = results;
-				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-				oos.writeObject(o);
-				oos.flush();
-			}
-			this.save();
-		}
+		ServerThread t = new ServerThread(this, userNumber);
+		t.run();
 	}
 	private int id = 0;
 	private Auction a = null;
