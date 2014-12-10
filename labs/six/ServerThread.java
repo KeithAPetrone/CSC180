@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 
 
 public class ServerThread implements Runnable
@@ -70,7 +71,14 @@ public class ServerThread implements Runnable
 				input = input.replace("(", "");
 				input = input.replace(")", "");
 				input = input.replace("b", "");
-				pw.println(service.bid(username, Integer.parseInt(input)).toString());
+				if(service.retreive(Integer.parseInt(input)).getLastModifiedDate().after(new Date()))
+				{
+					pw.println(service.bid(username, Integer.parseInt(input)).toString());
+				}
+				else
+				{
+					pw.println("Failed");
+				}
 				pw.flush();
 			}
 			else if (input.contains("c"))
